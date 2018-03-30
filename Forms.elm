@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
+import Regex exposing (..)
 
 
 main =
@@ -66,9 +67,19 @@ viewValidation : Model -> Html Msg
 viewValidation model =
     let
         ( color, message ) =
-            if model.password == model.passwordAgain then
-                ( "green", "OK" )
-            else
+            if not (model.password == model.passwordAgain) then
                 ( "red", "Password do not match!" )
+            else if String.length model.password <= 8 then
+                ( "red", "Password must be 8 length at least!" )
+            else if
+                not
+                    (Regex.contains (regex "[a-z]+") model.password
+                        && Regex.contains (regex "[A-Z]+") model.password
+                        && Regex.contains (regex "[0-9]+") model.password
+                    )
+            then
+                ( "red", "Password must be contains numbers, upper and lower case chars" )
+            else
+                ( "green", "OK" )
     in
         div [ style [ ( "color", color ) ] ] [ text message ]
