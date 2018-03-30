@@ -66,18 +66,20 @@ view model =
 viewValidation : Model -> Html Msg
 viewValidation model =
     let
+        passwordLength =
+            String.length model.password
+
+        containsLowerUpperAndNumbers =
+            Regex.contains (regex "[a-z]+") model.password
+                && Regex.contains (regex "[A-Z]+") model.password
+                && Regex.contains (regex "[0-9]+") model.password
+
         ( color, message ) =
             if not (model.password == model.passwordAgain) then
                 ( "red", "Password do not match!" )
-            else if String.length model.password <= 8 then
+            else if passwordLength <= 8 then
                 ( "red", "Password must be 8 length at least!" )
-            else if
-                not
-                    (Regex.contains (regex "[a-z]+") model.password
-                        && Regex.contains (regex "[A-Z]+") model.password
-                        && Regex.contains (regex "[0-9]+") model.password
-                    )
-            then
+            else if not containsLowerUpperAndNumbers then
                 ( "red", "Password must be contains numbers, upper and lower case chars" )
             else
                 ( "green", "OK" )
