@@ -25,12 +25,19 @@ init =
 
 type Msg
     = MorePlease
+    | NewGif (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         MorePlease ->
+            ( model, Cmd.none )
+
+        NewGif (Ok newUrl) ->
+            ( { model | gifUrl = newUrl }, Cmd.nonde )
+
+        NewGif (Error _) ->
             ( model, Cmd.none )
 
 
